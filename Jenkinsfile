@@ -66,29 +66,39 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
-                sh '''
-                    docker run --rm \
-                        -v /home/adminsaniya/.kube:/root/.kube \
-                        -v /home/adminsaniya/.minikube:/root/.minikube \
-                        bitnami/kubectl:latest \
-                        set image deployment/week9-cicd-app \
-                        week9-cicd-app=${IMAGE_NAME}:${BUILD_NUMBER}
-                '''
-            }
-        }
+    steps {
+        sh '''
+            docker run --rm --user 0 \
+                --add-host=host.docker.internal:host-gateway \
+                -v /home/adminsaniya/.minikube:/minikube:ro \
+                bitnami/kubectl:latest \
+                --server=https://host.docker.internal:50183 \
+                --certificate-authority=/minikube/ca.crt \
+                --client-certificate=/minikube/profiles/minikube/client.crt \
+                --client-key=/minikube/profiles/minikube/client.key \
+                --tls-server-name=localhost \
+                set image deployment/week9-cicd-app \
+                week9-cicd-app=${IMAGE_NAME}:${BUILD_NUMBER}
+        '''
+    }
+}
 
-        stage('Verify') {
-            steps {
-                sh '''
-                    docker run --rm \
-                        -v /home/adminsaniya/.kube:/root/.kube \
-                        -v /home/adminsaniya/.minikube:/root/.minikube \
-                        bitnami/kubectl:latest \
-                        rollout status deployment/week9-cicd-app --timeout=120s
-                '''
-            }
-        }
+stage('Verify') {
+    steps {
+        sh '''
+            docker run --rm --user 0 \
+                --add-host=host.docker.internal:host-gateway \
+                -v /home/adminsaniya/.minikube:/minikube:ro \
+                bitnami/kubectl:latest \
+                --server=https://host.docker.internal:50183 \
+                --certificate-authority=/minikube/ca.crt \
+                --client-certificate=/minikube/profiles/minikube/client.crt \
+                --client-key=/minikube/profiles/minikube/client.key \
+                --tls-server-name=localhost \
+                rollout status deployment/week9-cicd-app --timeout=120s
+        '''
+    }
+}
     }
 
     post {
