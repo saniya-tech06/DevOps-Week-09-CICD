@@ -21,10 +21,11 @@ pipeline {
         }
 
         stage('Test') {
-            steps {
-                sh 'pytest'
-            }
-        }
+    steps {
+        sh 'pip3 install -r requirements.txt'
+        sh 'pytest'
+    }
+}
 
         stage('Package') {
             steps {
