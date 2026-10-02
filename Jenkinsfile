@@ -72,7 +72,7 @@ pipeline {
                 --add-host=host.docker.internal:host-gateway \
                 -v /home/adminsaniya/.minikube:/minikube:ro \
                 bitnami/kubectl:latest \
-                --server=https://host.docker.internal:50183 \
+                --server=https://host.docker.internal:61403 \
                 --certificate-authority=/minikube/ca.crt \
                 --client-certificate=/minikube/profiles/minikube/client.crt \
                 --client-key=/minikube/profiles/minikube/client.key \
@@ -90,7 +90,7 @@ stage('Verify') {
                 --add-host=host.docker.internal:host-gateway \
                 -v /home/adminsaniya/.minikube:/minikube:ro \
                 bitnami/kubectl:latest \
-                --server=https://host.docker.internal:50183 \
+                --server=https://host.docker.internal:61403 \
                 --certificate-authority=/minikube/ca.crt \
                 --client-certificate=/minikube/profiles/minikube/client.crt \
                 --client-key=/minikube/profiles/minikube/client.key \
